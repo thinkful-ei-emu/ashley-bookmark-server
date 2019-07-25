@@ -1,5 +1,5 @@
 {
-  "name": "exp-boilerplate",
+  "name": "bookmark-server",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -9,7 +9,7 @@
     "dev": "nodemon src/server.js",
     "predeploy": "npm audit",
     "deploy": "git push heroku master",
-    "migrate": "postgrator -- config postator-config.js"
+    "migrate": "postgrator --config postgrator-config.js"
   },
   "keywords": [],
   "author": "",
@@ -29,7 +29,7 @@
     "chai": "^4.2.0",
     "eslint": "^6.0.1",
     "eslint-plugin-react": "^7.14.2",
-    "mocha": "^6.1.4",
+    "mocha": "^6.2.0",
     "nodemon": "^1.19.1",
     "postgrator-cli": "^3.1.0",
     "supertest": "^4.0.2"

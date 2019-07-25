@@ -54,3 +54,4 @@
 {"message":"valid url is required","level":"error"}
 {"message":"Bookmark with id 87b51d6d-a6bc-4923-9af6-c5ce9f00215b was created","level":"info"}
 {"message":"Bookmark with id f98c48e8-192b-4122-8ce2-8d655fcd0862 was created","level":"info"}
+{"message":"Unauthorized request to path: /","level":"error"}
