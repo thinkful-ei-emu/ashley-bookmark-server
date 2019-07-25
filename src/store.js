@@ -1,25 +1,21 @@
+const uuid = require('uuid/v4');
+
 const bookmarks = [
-  {
-    id:'099de6c4-58ac-4bf2-b430-d5662d0c1713',
+  { id: uuid(),
+    title: 'Thinkful',
+    url: 'https://www.thinkful.com',
+    description: 'Think outside the classroom',
+    rating: '5' },
+  { id: uuid(),
     title: 'Google',
-    url: 'http://www.google.com',
-    rating: '3',
-    description: 'No evil'
-  },
-  {
-    id:'3724bd5b-d8ac-4475-b3ff-0c3e7d1cd71e',
-    title: 'Facebook',
-    url: 'http://www.facebook.com',
-    rating: '5',
-    description: 'find your friends'
-  },
-  {
-    id:'6472c0d6-5421-4eb6-bfe0-3dd1a517f422',
-    title: 'Github',
-    url: 'http://www.github.com',
-    rating: '2',
-    description: 'upload your repos'
-  }
+    url: 'https://www.google.com',
+    description: 'Where we find everything else',
+    rating: '4' },
+  { id: uuid(),
+    title: 'MDN',
+    url: 'https://developer.mozilla.org',
+    description: 'The only place to find web documentation',
+    rating: '5' },
 ];
 
-module.exports = bookmarks;
+module.exports = { bookmarks };

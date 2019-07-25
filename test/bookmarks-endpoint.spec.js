@@ -6,6 +6,7 @@ const store = require('../src/store');
 
 describe('Bookmarks Endpoints', () => {
   let bookmarksCopy, db;
+  
 
   before('make knex instance', () => {
     db = knex({
