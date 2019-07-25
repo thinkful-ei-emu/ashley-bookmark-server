@@ -1,8 +1,7 @@
 const knex = require('knex');
 const fixtures = require('./bookmarks-fixtures');
 const app = require('../src/app');
-// TODO: remove when updating POST and DELETE
-// const store = require('../src/store');
+
 
 describe('Bookmarks Endpoints', () => {
   let  db;
@@ -144,32 +143,77 @@ describe('Bookmarks Endpoints', () => {
       // const testBookmarks = fixtures();
       const newBookmark = {     
         title: 'Google',
-        url: 'https://www.google.com',
-        description: 'Where we find everything else',
+        url: 'https://www.google.com',        
         rating: 4,
-      };
+      };     
       
       return supertest(app)
         .post('/bookmarks')
-        .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
         .send(newBookmark)
+        .set('Authorization', `Bearer ${process.env.API_TOKEN}`)        
         .expect(201)
-        .then(() =>
-          console.log(newBookmark) 
-          // supertest(app)
-          //   .get(`/bookmarks/${res.id}`)
-          //   .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-          //   .expect(200, res.id)
+        .expect(res => {
+          expect(res.body.title).to.eql(newBookmark.title);
+          expect(res.body.url).to.eql(newBookmark.url);
+          expect(res.body.rating).to.eql(newBookmark.rating);
+          expect(res.body.description).to.eql('');
+          expect(res.body).to.have.property('id');
+          expect(res.headers.location).to.eql(`/bookmarks/${res.body.id}`);
+
+        })
+        
+        .then(res =>          
+          supertest(app)
+            .get(`/bookmarks/${res.body.id}`)
+            .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+            .expect(200, res.body)
         );     
+        
       
     });
-
-    it(`gets new bookmark with specified id`, () => {
-      supertest(app)
-      //   .get(`/bookmarks/${res.id}`)
-      //   .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-      //   .expect(200, res.id)
+    it(`responds with 400 and an error message when the 'title' is missing`, () => {
+      return supertest(app)
+        .post('/bookmarks')
+        .send({
+          // title: 'Google',
+          url: 'https://www.google.com',          
+          rating: 4,
+        })
+        .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+        .expect(400, {
+          error: {message: `'title' is required`}
+        });
     });
+    it(`responds with 400 and an error message when the 'url' is missing`, () => {
+      return supertest(app)
+        .post('/bookmarks')
+        .send({
+          title: 'Google',
+          // url: 'https://www.google.com',         
+          rating: 4,
+        })
+        .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+        .expect(400, {
+          error: {message: `'url' is required`}
+        });
+    });
+    it(`responds with 400 and an error message when the 'rating' is missing`, () => {
+      return supertest(app)
+        .post('/bookmarks')
+        .send({
+          title: 'Google',
+          url: 'https://www.google.com',         
+          // rating: 4,
+        })
+        .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+        .expect(400, {
+          error: {message: `'rating' is required`}
+        });
+    });
+  
+
+
+    
   });
   
 });

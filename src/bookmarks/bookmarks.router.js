@@ -54,7 +54,7 @@ bookmarksRouter
       newBookmark
     ).then(bookmark => {
       logger.info(`Bookmark with id ${bookmark.id} was created`);
-      res.status(201).location(`http://localhost:8000/bookmarks/${bookmark.id}`).json(bookmark);
+      res.status(201).location(`/bookmarks/${bookmark.id}`).json((serializeBookmark(bookmark)));
     }).catch(next);
 
         
@@ -65,7 +65,7 @@ bookmarksRouter
   .all((req, res, next) => {
     const { bookmark_id } = req.params;
     BookmarksService.getById(req.app.get('db'), bookmark_id)
-    // const bookmark = bookmarks.find(c => c.id == id);
+    
       .then(bookmark => {
         if (!bookmark) {
           logger.error(`Bookmark with id ${bookmark_id} not found.`);
