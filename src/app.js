@@ -18,5 +18,8 @@ app.use(validateBearerToken);
 app.use(bookmarksRouter);
 app.use(errorHandler);
 
+app.get('/', (req, res) => {
+  res.send('Hello, world!');
+});
 
 module.exports = app;
