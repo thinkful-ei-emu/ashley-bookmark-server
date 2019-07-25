@@ -2,7 +2,7 @@ const knex = require('knex');
 const fixtures = require('./bookmarks-fixtures');
 const app = require('../src/app');
 // TODO: remove when updating POST and DELETE
-const store = require('../src/store');
+// const store = require('../src/store');
 
 describe('Bookmarks Endpoints', () => {
   let  db;
@@ -112,5 +112,64 @@ describe('Bookmarks Endpoints', () => {
     });
   });
 
+
+  describe('DELETE /bookmarks/:id', () => {
+    context('Given that there are bookmarks in the database', () => {
+      const testBookmarks = fixtures();
+      beforeEach('insert bookmarks', () => {
+        return db
+          .into('bookmarks')
+          .insert(testBookmarks);
+      });
+      it('responds with 204 and deletes specified bookmark', () => {
+        const removeId = 2; 
+        let expectedBookmarks = testBookmarks.filter(bookmark => bookmark.id !== removeId);
+
+        return supertest(app)
+          .delete(`/bookmarks/${removeId}`)
+          .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+          .expect(204)
+          .then(() => 
+            supertest(app)
+              .get(`/bookmarks`)
+              .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+              .expect(200, expectedBookmarks)
+          );                    
+      });
+    });
+  });
+
+  describe(`POST /bookmarks`, () => {
+    it(`creates an item, responding with 201 and the new item`, () => {
+      // const testBookmarks = fixtures();
+      const newBookmark = {     
+        title: 'Google',
+        url: 'https://www.google.com',
+        description: 'Where we find everything else',
+        rating: 4,
+      };
+      
+      return supertest(app)
+        .post('/bookmarks')
+        .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+        .send(newBookmark)
+        .expect(201)
+        .then(() =>
+          console.log(newBookmark) 
+          // supertest(app)
+          //   .get(`/bookmarks/${res.id}`)
+          //   .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+          //   .expect(200, res.id)
+        );     
+      
+    });
+
+    it(`gets new bookmark with specified id`, () => {
+      supertest(app)
+      //   .get(`/bookmarks/${res.id}`)
+      //   .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+      //   .expect(200, res.id)
+    });
+  });
   
 });

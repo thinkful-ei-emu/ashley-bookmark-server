@@ -21,7 +21,7 @@ bookmarksRouter
   .get((req, res, next) => {   
     BookmarksService.getAllBookmarks(req.app.get('db')) 
       .then(bookmarks => {
-        res.json(bookmarks.map(serializeBookmark));
+        return res.json(bookmarks.map(serializeBookmark));
       })
       .catch(next);   
   })
@@ -32,8 +32,7 @@ bookmarksRouter
         return res.status(400).send({
           error: { message: `'${field}' is required` }
         });
-      }
-      
+      }     
 
     }
     const { title, url, rating, description} = req.body;
