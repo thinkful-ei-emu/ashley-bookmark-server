@@ -56,9 +56,9 @@ describe('Bookmarks Endpoints', () => {
     });
 
     it(`responds with 401 Unauthorized for DELETE /bookmarks/:id`, () => {
-      const aBookmark = store.bookmarks[1];
+      const singleBookmark = store.bookmarks[1];
       return supertest(app)
-        .delete(`/bookmarks/${aBookmark.id}`)
+        .delete(`/bookmarks/${singleBookmark.id}`)
         .expect(401, { error: 'Unauthorized request' });
     });
   });
