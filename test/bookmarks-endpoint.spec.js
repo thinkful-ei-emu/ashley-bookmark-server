@@ -23,40 +23,40 @@ describe('Bookmarks Endpoints', () => {
 
   describe(`Unauthorized requests`, () => {
     const testBookmarks = fixtures();
-    it(`responds with 401 Unauthorized for GET /bookmarks`, () => {
+    it(`responds with 401 Unauthorized for GET /api/bookmarks`, () => {
       return supertest(app)
-        .get('/bookmarks')
+        .get('/api/bookmarks')
         .expect(401, { error: 'Unauthorized request' });
     });
 
-    it(`responds with 401 Unauthorized for POST /bookmarks`, () => {
+    it(`responds with 401 Unauthorized for POST /api/bookmarks`, () => {
       return supertest(app)
-        .post('/bookmarks')
+        .post('/api/bookmarks')
         .send({ title: 'test-title', url: 'http://some.thing.com', rating: 1 })
         .expect(401, { error: 'Unauthorized request' });
     });
 
-    it(`responds with 401 Unauthorized for GET /bookmarks/:id`, () => {
+    it(`responds with 401 Unauthorized for GET /api/bookmarks/:id`, () => {
       const secondBookmark = testBookmarks[1];
       return supertest(app)
-        .get(`/bookmarks/${secondBookmark.id}`)
+        .get(`/api/bookmarks/${secondBookmark.id}`)
         .expect(401, { error: 'Unauthorized request' });
     });
 
-    it(`responds with 401 Unauthorized for DELETE /bookmarks/:id`, () => {
+    it(`responds with 401 Unauthorized for DELETE /api/bookmarks/:id`, () => {
       const singleBookmark = testBookmarks[1];
       return supertest(app)
-        .delete(`/bookmarks/${singleBookmark.id}`)
+        .delete(`/api/bookmarks/${singleBookmark.id}`)
         .expect(401, { error: 'Unauthorized request' });
     });
   });
 
-  describe('GET /bookmarks', () => {
+  describe('GET /api/bookmarks', () => {
 
     context(`Given no bookmarks`, () => {
       it(`responds with 200 and an empty list`, () => {
         return supertest(app)
-          .get('/bookmarks')
+          .get('/api/bookmarks')
           .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
           .expect(200, []);
       });
@@ -72,7 +72,7 @@ describe('Bookmarks Endpoints', () => {
         
       it('gets the bookmarks from the store', () => {
         return supertest(app)
-          .get('/bookmarks')
+          .get('/api/bookmarks')
           .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
           .expect(200, testBookmarks);
       });
@@ -81,11 +81,11 @@ describe('Bookmarks Endpoints', () => {
 
   });  
 
-  describe('GET /bookmarks/:id', () => {
+  describe('GET /api/bookmarks/:id', () => {
     context(`Given no bookmarks`, () => {
       it(`responds 404 whe bookmark doesn't exist`, () => {
         return supertest(app)
-          .get(`/bookmarks/123`)
+          .get(`/api/bookmarks/123`)
           .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
           .expect(404, {
             error: { message: `Bookmark Not Found` }
@@ -104,7 +104,7 @@ describe('Bookmarks Endpoints', () => {
         const bookmarkId = 2;
         const expectedBookmark = testBookmarks[bookmarkId - 1];
         return supertest(app)
-          .get(`/bookmarks/${bookmarkId}`)
+          .get(`/api/bookmarks/${bookmarkId}`)
           .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
           .expect(200, expectedBookmark);
       });
@@ -112,7 +112,7 @@ describe('Bookmarks Endpoints', () => {
   });
 
 
-  describe('DELETE /bookmarks/:id', () => {
+  describe('DELETE /api/bookmarks/:id', () => {
     context('Given that there are bookmarks in the database', () => {
       const testBookmarks = fixtures();
       beforeEach('insert bookmarks', () => {
@@ -125,12 +125,12 @@ describe('Bookmarks Endpoints', () => {
         let expectedBookmarks = testBookmarks.filter(bookmark => bookmark.id !== removeId);
 
         return supertest(app)
-          .delete(`/bookmarks/${removeId}`)
+          .delete(`/api/bookmarks/${removeId}`)
           .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
           .expect(204)
           .then(() => 
             supertest(app)
-              .get(`/bookmarks`)
+              .get(`/api/bookmarks`)
               .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
               .expect(200, expectedBookmarks)
           );                    
@@ -138,7 +138,7 @@ describe('Bookmarks Endpoints', () => {
     });
   });
 
-  describe(`POST /bookmarks`, () => {
+  describe(`POST /api/bookmarks`, () => {
     it(`creates an item, responding with 201 and the new item`, () => {
       // const testBookmarks = fixtures();
       const newBookmark = {     
@@ -148,7 +148,7 @@ describe('Bookmarks Endpoints', () => {
       };     
       
       return supertest(app)
-        .post('/bookmarks')
+        .post('/api/bookmarks')
         .send(newBookmark)
         .set('Authorization', `Bearer ${process.env.API_TOKEN}`)        
         .expect(201)
@@ -158,13 +158,13 @@ describe('Bookmarks Endpoints', () => {
           expect(res.body.rating).to.eql(newBookmark.rating);
           expect(res.body.description).to.eql('');
           expect(res.body).to.have.property('id');
-          expect(res.headers.location).to.eql(`/bookmarks/${res.body.id}`);
+          expect(res.headers.location).to.eql(`/${res.body.id}`);
 
         })
         
         .then(res =>          
           supertest(app)
-            .get(`/bookmarks/${res.body.id}`)
+            .get(`/api/bookmarks/${res.body.id}`)
             .set('Authorization', `Bearer ${process.env.API_TOKEN}`)
             .expect(200, res.body)
         );     
@@ -173,7 +173,7 @@ describe('Bookmarks Endpoints', () => {
     });
     it(`responds with 400 and an error message when the 'title' is missing`, () => {
       return supertest(app)
-        .post('/bookmarks')
+        .post('/api/bookmarks')
         .send({
           // title: 'Google',
           url: 'https://www.google.com',          
@@ -186,7 +186,7 @@ describe('Bookmarks Endpoints', () => {
     });
     it(`responds with 400 and an error message when the 'url' is missing`, () => {
       return supertest(app)
-        .post('/bookmarks')
+        .post('/api/bookmarks')
         .send({
           title: 'Google',
           // url: 'https://www.google.com',         
@@ -199,7 +199,7 @@ describe('Bookmarks Endpoints', () => {
     });
     it(`responds with 400 and an error message when the 'rating' is missing`, () => {
       return supertest(app)
-        .post('/bookmarks')
+        .post('/api/bookmarks')
         .send({
           title: 'Google',
           url: 'https://www.google.com',         

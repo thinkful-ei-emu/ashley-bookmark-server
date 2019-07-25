@@ -17,7 +17,7 @@ const serializeBookmark = bookmark => ({
 });
 
 bookmarksRouter
-  .route('/bookmarks')
+  .route('/')
   .get((req, res, next) => {   
     BookmarksService.getAllBookmarks(req.app.get('db')) 
       .then(bookmarks => {
@@ -54,18 +54,17 @@ bookmarksRouter
       newBookmark
     ).then(bookmark => {
       logger.info(`Bookmark with id ${bookmark.id} was created`);
-      res.status(201).location(`/bookmarks/${bookmark.id}`).json((serializeBookmark(bookmark)));
+      res.status(201).location(`/${bookmark.id}`).json((serializeBookmark(bookmark)));
     }).catch(next);
 
         
   });
 
 bookmarksRouter
-  .route('/bookmarks/:bookmark_id')
+  .route('/:bookmark_id')
   .all((req, res, next) => {
     const { bookmark_id } = req.params;
-    BookmarksService.getById(req.app.get('db'), bookmark_id)
-    
+    BookmarksService.getById(req.app.get('db'), bookmark_id)    
       .then(bookmark => {
         if (!bookmark) {
           logger.error(`Bookmark with id ${bookmark_id} not found.`);
